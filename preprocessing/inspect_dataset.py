@@ -14,4 +14,12 @@ data = scipy.io.loadmat(
     struct_as_record=False
 )
 
-print("MAT file loaded successfully.")
+# Inspect top-level structure of the .mat file
+print("\nTop-level keys in .mat file:")
+for key in data.keys():
+    if not key.startswith("__"):
+        print(f"Key: {key}")
+
+# Identify main battery object
+battery = data["B0005"]
+print("\nBattery object identified:", type(battery))
