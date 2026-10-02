@@ -1,7 +1,6 @@
-﻿import scipy.io
+import scipy.io
 from pathlib import Path
 
-# Paths
 project_root = Path(__file__).resolve().parents[1]
 file_path = project_root / "data" / "raw" / "B0005.mat"
 
@@ -15,14 +14,12 @@ data = scipy.io.loadmat(
 
 battery = data["B0005"]
 cycles = battery.cycle
-print(f"\nTotal cycle records in battery: {len(cycles)}")
 
-# Find and inspect the first discharge cycle
+# Find the first discharge cycle
 discharge_cycle = None
 discharge_index = None
 
 for i, cycle in enumerate(cycles):
-    # Cycle types include: 'charge', 'discharge', 'impedance'
     if cycle.type == "discharge":
         discharge_cycle = cycle
         discharge_index = i
@@ -35,3 +32,17 @@ print("Ambient temperature:", discharge_cycle.ambient_temperature)
 
 print("\nTime information:")
 print(discharge_cycle.time)
+
+print("\n===== DISCHARGE DATA =====")
+
+cycle_data = discharge_cycle.data
+
+for field in cycle_data._fieldnames:
+    value = getattr(cycle_data, field)
+
+    print(f"\nField: {field}")
+    print("Shape:", getattr(value, "shape", "No shape"))
+
+    # Show first 5 values for numerical arrays
+    if hasattr(value, "shape") and value.size > 0:
+        print("First 5 values:", value[:5])
